@@ -1,0 +1,30 @@
+{
+  "name": "ethereum-service",
+  "version": "0.0.1",
+  "description": "Tiny EtherumService",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/violethair/EthereumService.git"
+  },
+  "keywords": [
+    "ethereum",
+    "bsc"
+  ],
+  "author": "violethair",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/violethair/EthereumService/issues"
+  },
+  "homepage": "https://github.com/violethair/EthereumService#readme",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "eth-log-parser": "^0.1.0",
+    "web3-eth-abi": "^1.7.4",
+    "web3-eth-accounts": "^1.7.4",
+    "web3-utils": "^1.7.4"
+  }
+}
