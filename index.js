@@ -162,21 +162,27 @@ const EthereumService = {
         })
     },
 
-    callSmartContract(contractAddress, abi, method, params, enableDecode = true) {
+    callSmartContract(contractAddress, abi, method, params, enableDecode = true, usePreventiveNode = false) {
+        var _this = this
         return new Promise((resolve, reject) => {
             // encode data
             const { err, data, outputs } = this.encodeSmartContract(abi, method, params)
 
             if (err) return reject(err)
 
-            Axios.post(this.NODE, {
+            Axios.post(usePreventiveNode ? this.PREVENTIVE_NODE : this.NODE, {
                 "jsonrpc": "2.0", "id": 1, "method": "eth_call", "params": [{
                     to: contractAddress,
                     data
                 }, "latest"]
             }).then(res => {
                 if(!res || !res.data || !res.data.result) {
-                    return reject("result is null")
+                    if(_this.PREVENTIVE_NODE && usePreventiveNode === false) {
+                        console.log(`[callSmartContract ${contractAddress} - ${method}(${params.join(",")})] result is null. try preventive node...`)
+                        return _this.callSmartContract(contractAddress, abi, method, params, enableDecode, true).then(resolve).catch(reject)
+                    } else {
+                        return reject("result is null")
+                    }
                 }
                 if (!enableDecode) return resolve(res.data.result)
                 const decode = Web3EthABI.decodeParameters(outputs, res.data.result)
@@ -186,10 +192,16 @@ const EthereumService = {
                 }
                 resolve(result)
             }).catch( error => {
-                if (error.response) {
-                    reject(error.response)
+                if(_this.PREVENTIVE_NODE && usePreventiveNode === false) {
+                    console.log(`[callSmartContract ${contractAddress} - ${method}(${params.join(",")})] error. try preventive node...`)
+                    console.log(error);
+                    return _this.callSmartContract(contractAddress, abi, method, params, enableDecode, true).then(resolve).catch(reject)
                 } else {
-                    reject(error)
+                    if (error.response) {
+                        reject(error.response)
+                    } else {
+                        reject(error)
+                    }
                 }
             })
         })
