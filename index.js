@@ -176,12 +176,12 @@ const EthereumService = {
                     data
                 }, "latest"]
             }).then(res => {
-                if(!res || !res.data || !res.data.result) {
+                if(!res || !res.data || !res.data.result || res.data.result === "0x") {
                     if(_this.PREVENTIVE_NODE && usePreventiveNode === false) {
-                        console.log(`[callSmartContract ${contractAddress} - ${method}(${params.join(",")})] result is null. try preventive node...`)
+                        console.log(`[callSmartContract ${contractAddress} - ${method}(${params.join(",")})] result is ${res.data.result}. try preventive node...`)
                         return _this.callSmartContract(contractAddress, abi, method, params, enableDecode, true).then(resolve).catch(reject)
                     } else {
-                        return reject("result is null")
+                        return reject(`result is ${res.data.result}`)
                     }
                 }
                 if (!enableDecode) return resolve(res.data.result)
