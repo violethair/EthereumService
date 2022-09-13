@@ -33,7 +33,7 @@ const EthereumService = {
             }).catch(error => {
                 if (error.response && error.response.data) {
                     reject(error.response.data)
-                } else if(error.message) {
+                } else if (error.message) {
                     reject(error.message)
                 } else {
                     reject(error)
@@ -51,7 +51,7 @@ const EthereumService = {
             }).catch(error => {
                 if (error.response && error.response.data) {
                     reject(error.response.data)
-                } else if(error.message) {
+                } else if (error.message) {
                     reject(error.message)
                 } else {
                     reject(error)
@@ -73,7 +73,7 @@ const EthereumService = {
             }).catch(error => {
                 if (error.response && error.response.data) {
                     reject(error.response.data)
-                } else if(error.message) {
+                } else if (error.message) {
                     reject(error.message)
                 } else {
                     reject(error)
@@ -91,7 +91,7 @@ const EthereumService = {
             }).catch(error => {
                 if (error.response && error.response.data) {
                     reject(error.response.data)
-                } else if(error.message) {
+                } else if (error.message) {
                     reject(error.message)
                 } else {
                     reject(error)
@@ -109,7 +109,7 @@ const EthereumService = {
             }).catch(error => {
                 if (error.response && error.response.data) {
                     reject(error.response.data)
-                } else if(error.message) {
+                } else if (error.message) {
                     reject(error.message)
                 } else {
                     reject(error)
@@ -131,7 +131,7 @@ const EthereumService = {
             }).catch(error => {
                 if (error.response && error.response.data) {
                     reject(error.response.data)
-                } else if(error.message) {
+                } else if (error.message) {
                     reject(error.message)
                 } else {
                     reject(error)
@@ -153,7 +153,7 @@ const EthereumService = {
             this.sendTransaction(txParams, privateKey).then(txid => resolve(txid)).catch(error => {
                 if (error.response && error.response.data) {
                     reject(error.response.data)
-                } else if(error.message) {
+                } else if (error.message) {
                     reject(error.message)
                 } else {
                     reject(error)
@@ -162,7 +162,7 @@ const EthereumService = {
         })
     },
 
-    callSmartContract(contractAddress, abi, method, params, enableDecode = true, usePreventiveNode = false) {
+    callSmartContract(contractAddress, abi, method, params, enableDecode = true, usePreventiveNode = false, blockNumber = false) {
         var _this = this
         return new Promise((resolve, reject) => {
             // encode data
@@ -174,10 +174,10 @@ const EthereumService = {
                 "jsonrpc": "2.0", "id": 1, "method": "eth_call", "params": [{
                     to: contractAddress,
                     data
-                }, "latest"]
+                }, blockNumber ? blockNumber : "latest"]
             }).then(res => {
-                if(!res || !res.data || !res.data.result || res.data.result === "0x") {
-                    if(_this.PREVENTIVE_NODE && usePreventiveNode === false) {
+                if (!res || !res.data || !res.data.result || res.data.result === "0x") {
+                    if (_this.PREVENTIVE_NODE && usePreventiveNode === false) {
                         console.log(`[callSmartContract ${contractAddress} - ${method}(${params.join(",")})] result is ${res.data.result}. try preventive node...`)
                         return _this.callSmartContract(contractAddress, abi, method, params, enableDecode, true).then(resolve).catch(reject)
                     } else {
@@ -191,8 +191,8 @@ const EthereumService = {
                     result[outputs[i].name] = decode[outputs[i].name]
                 }
                 resolve(result)
-            }).catch( error => {
-                if(_this.PREVENTIVE_NODE && usePreventiveNode === false) {
+            }).catch(error => {
+                if (_this.PREVENTIVE_NODE && usePreventiveNode === false) {
                     console.log(`[callSmartContract ${contractAddress} - ${method}(${params.join(",")})] error. try preventive node...`)
                     console.log(error);
                     return _this.callSmartContract(contractAddress, abi, method, params, enableDecode, true).then(resolve).catch(reject)
@@ -226,7 +226,7 @@ const EthereumService = {
             this.sendTransaction(txParams, privateKey).then(txid => resolve(txid)).catch(error => {
                 if (error.response && error.response.data) {
                     reject(error.response.data)
-                } else if(error.message) {
+                } else if (error.message) {
                     reject(error.message)
                 } else {
                     reject(error)
@@ -257,7 +257,7 @@ const EthereumService = {
             }).catch(error => {
                 if (error.response && error.response.data) {
                     reject(error.response.data)
-                } else if(error.message) {
+                } else if (error.message) {
                     reject(error.message)
                 } else {
                     reject(error)
@@ -296,14 +296,14 @@ const EthereumService = {
                     console.log(res);
                     resolve(res.data.result)
                 }).catch(error => {
-                if (error.response && error.response.data) {
-                    reject(error.response.data)
-                } else if(error.message) {
-                    reject(error.message)
-                } else {
-                    reject(error)
-                }
-            })
+                    if (error.response && error.response.data) {
+                        reject(error.response.data)
+                    } else if (error.message) {
+                        reject(error.message)
+                    } else {
+                        reject(error)
+                    }
+                })
             } catch (error) {
                 reject(error)
             }
@@ -315,14 +315,14 @@ const EthereumService = {
             Axios.post(this.NODE, {
                 "jsonrpc": "2.0", "id": 1, "method": "eth_getTransactionCount", "params": [address, "latest"]
             }).then(res => {
-                if(!res || !res.data || !res.data.result) {
+                if (!res || !res.data || !res.data.result) {
                     return reject("result is null")
                 }
                 resolve(res.data.result)
             }).catch(error => {
                 if (error.response && error.response.data) {
                     reject(error.response.data)
-                } else if(error.message) {
+                } else if (error.message) {
                     reject(error.message)
                 } else {
                     reject(error)
@@ -344,7 +344,7 @@ const EthereumService = {
             }).catch(error => {
                 if (error.response && error.response.data) {
                     reject(error.response.data)
-                } else if(error.message) {
+                } else if (error.message) {
                     reject(error.message)
                 } else {
                     reject(error)
@@ -358,14 +358,14 @@ const EthereumService = {
             Axios.post(this.NODE, {
                 "jsonrpc": "2.0", "id": 1, "method": "eth_gasPrice", "params": []
             }).then(res => {
-                if(!res || !res.data || !res.data.result) {
+                if (!res || !res.data || !res.data.result) {
                     return reject("result is null")
                 }
                 resolve(res.data.result)
             }).catch(error => {
                 if (error.response && error.response.data) {
                     reject(error.response.data)
-                } else if(error.message) {
+                } else if (error.message) {
                     reject(error.message)
                 } else {
                     reject(error)
@@ -396,14 +396,14 @@ const EthereumService = {
             Axios.post(this.NODE, {
                 "jsonrpc": "2.0", "id": 1, "method": "eth_getCode", "params": [address, 'latest']
             }).then(res => {
-                if(!res || !res.data || !res.data.result) {
+                if (!res || !res.data || !res.data.result) {
                     return reject("result is null")
                 }
                 resolve(res.data.result)
             }).catch(error => {
                 if (error.response && error.response.data) {
                     reject(error.response.data)
-                } else if(error.message) {
+                } else if (error.message) {
                     reject(error.message)
                 } else {
                     reject(error)
@@ -418,16 +418,16 @@ const EthereumService = {
             Axios.post(usePreventiveNode ? this.PREVENTIVE_NODE : this.NODE, {
                 "jsonrpc": "2.0", "id": 1, "method": "eth_getLogs", "params": [{ fromBlock: numberToHex(fromBlock), toBlock: numberToHex(toBlock) }]
             }).then(res => {
-                if(!res || !res.data || !res.data.result) {
-                    if(_this.PREVENTIVE_NODE && usePreventiveNode === false) {
+                if (!res || !res.data || !res.data.result) {
+                    if (_this.PREVENTIVE_NODE && usePreventiveNode === false) {
                         console.log(`[getLogs ${fromBlock} -> ${toBlock}] result is null. try preventive node...`)
                         return _this.getLogs(fromBlock, toBlock, true).then(resolve).catch(reject)
                     } else {
                         return reject("result is null")
                     }
                 }
-                if(res.data.result.length === 0) {
-                    if(_this.PREVENTIVE_NODE && usePreventiveNode === false) {
+                if (res.data.result.length === 0) {
+                    if (_this.PREVENTIVE_NODE && usePreventiveNode === false) {
                         console.log(`[getLogs ${fromBlock} -> ${toBlock}] result length is 0. try preventive node...`)
                         return _this.getLogs(fromBlock, toBlock, true).then(resolve).catch(reject)
                     } else {
@@ -438,7 +438,7 @@ const EthereumService = {
             }).catch(error => {
                 if (error.response && error.response.data) {
                     reject(error.response.data)
-                } else if(error.message) {
+                } else if (error.message) {
                     reject(error.message)
                 } else {
                     reject(error)
@@ -452,14 +452,14 @@ const EthereumService = {
             Axios.post(this.NODE, {
                 "jsonrpc": "2.0", "id": 1, "method": "eth_getLogs", "params": [{ fromBlock: numberToHex(fromBlock), toBlock: numberToHex(toBlock), address }]
             }).then(res => {
-                if(!res || !res.data || !res.data.result) {
+                if (!res || !res.data || !res.data.result) {
                     return reject("result is null")
                 }
                 resolve(res.data.result)
             }).catch(error => {
                 if (error.response && error.response.data) {
                     reject(error.response.data)
-                } else if(error.message) {
+                } else if (error.message) {
                     reject(error.message)
                 } else {
                     reject(error)
